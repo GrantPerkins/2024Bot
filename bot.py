@@ -60,6 +60,8 @@ class Client(discord.Client):
             text = " ".join(text)
             channel = self.get_channel(int(channel[2:-1]))
             await channel.send(text)
+        if message.content.lower().startswith(">help"):
+            await message.channel.send("Bro literally fuck off")
         # elisabeth's dumb jokes
         if message.author.id == self.user_ids["elisabeth"] and any(
                 [i in message.content for i in ["tf", "walk", "mods"]]):
