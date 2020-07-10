@@ -1,0 +1,5 @@
+*.html
+token.txt
+/.idea/
+/__pycache__/
+/__pycache__/*
