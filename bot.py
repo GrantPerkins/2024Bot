@@ -35,7 +35,7 @@ class Client(discord.Client):
             "grant": 454052089979600897
         }
         self.channels = {
-            "faq-updates": 731214087740063886,
+            "faq-updates": 731273029602115694,
             "general": 699643028121452676,
             "vc-text": 706619592935735316
         }
@@ -78,6 +78,7 @@ class Client(discord.Client):
             await self.get_channel(self.channels["faq-updates"]).send("WPI's FAQ changed. See:")
             await self.get_channel(self.channels["faq-updates"]).send(
                 "https://www.wpi.edu/we-are-wpi/frequently-asked-questions")
+            save_html("faq.html")
 
 
 client = Client()
