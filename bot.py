@@ -1,13 +1,14 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
-from discord import FFmpegAudio
+from discord import FFmpegPCMAudio
 import asyncio
 import filecmp
 from time import time
 from urllib.request import urlopen
 import sys
 from faqparser import FAQParser
+import random
 
 url = 'https://www.wpi.edu/we-are-wpi/frequently-asked-questions'
 test_url = "https://www.wpi.edu/we-are-wpi"
@@ -80,13 +81,14 @@ class Client(discord.Client):
         if message.content.startswith(">play") and message.author.id == self.user_ids["grant"]:
             channel = message.author.voice.channel
             if channel != None:
-                vc = await channel.connect()
+                member = random.choice(channel.voice_members)
+                member.voice.move_to(self.get_channel(731339163424784486))
                 source = FFmpegPCMAudio('images/scotland.mp3')
                 voice = discord.utils.get(self.voice_clients, guild=message.guild)
                 if voice and voice.is_connected():
                     await voice.move_to(channel)
                 else:
-                    voice = await channel.connect()
+                    voice = await channel.connect(self.get_channel(731339163424784486))
                 player = voice.play(source)
         # FAQ update
         save_html("current.html")
