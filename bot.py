@@ -78,7 +78,7 @@ class Client(discord.Client):
             sys.exit()
         # play
         if message.content.startswith(">play") and message.author.id == self.user_ids["grant"]:
-            channel = self.get_user(self.user_ids["grant"]).voice.voice_channel
+            channel = message.author.voice.voice_channel
             if channel != None:
                 vc = await channel.connect()
                 player = vc.create_ffmpeg_player('images/scotland.mp3', after=lambda: print('done'))
