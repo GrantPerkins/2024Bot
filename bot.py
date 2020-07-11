@@ -27,7 +27,7 @@ def save_html(filename):
         with open(filename, "w+") as f:
             f.writelines(parser.data)
 
-@bot.command
+@bot.command(pass_context=True)
 async def ping(ctx):
     before = time()
     await ctx.channel.send('Pong!')
