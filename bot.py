@@ -102,7 +102,7 @@ class Client(discord.Client):
                     self.voice.play(source)
                     await member.move_to(self.get_channel(731339163424784486))
         if len(self.get_channel(731339163424784486).members) == 1:
-            self.get_channel(731339163424784486).disconnect()
+            await self.voice.disconnect()
             self.voice = None
             print("disconnecting")
 
