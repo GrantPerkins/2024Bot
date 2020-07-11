@@ -84,7 +84,7 @@ class Client(discord.Client):
                 member = random.choice(channel.members)
                 print(member)
                 print(self.get_channel(731339163424784486))
-                member.voice.move_to(self.get_channel(731339163424784486))
+                member.move_to(self.get_channel(731339163424784486))
                 source = FFmpegPCMAudio('images/scotland.mp3')
                 voice = discord.utils.get(self.voice_clients, guild=message.guild)
                 if voice and voice.is_connected():
