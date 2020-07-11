@@ -81,7 +81,7 @@ class Client(discord.Client):
         if message.content.startswith(">play") and message.author.id == self.user_ids["grant"]:
             channel = message.author.voice.channel
             if channel != None:
-                member = random.choice(channel.voice_members)
+                member = random.choice(channel.members)
                 print(member)
                 print(self.get_channel(731339163424784486))
                 member.voice.move_to(self.get_channel(731339163424784486))
