@@ -19,6 +19,7 @@ with open("token.txt", 'r') as f:
 
 bot = commands.Bot(">")
 
+
 def save_html(filename):
     response = urlopen(url)
     if response.getheader('Content-Type').split(";")[0] == 'text/html':
@@ -29,11 +30,13 @@ def save_html(filename):
         with open(filename, "w+") as f:
             f.writelines(parser.data)
 
+
 class Client(discord.Client):
     def __init__(self):
         super().__init__()
         self.roles = {
-            "mod": 699644834629288007
+            "mod": 699644834629288007,
+            "hipster": 710844902585532416
         }
         self.user_ids = {
             "elisabeth": 731214087740063886,
@@ -71,33 +74,29 @@ class Client(discord.Client):
         if message.author.id == self.user_ids["elisabeth"] and any(
                 [i in message.content for i in ["tf", "walk", "mods", "omg"]]):
             await message.channel.send("SHUT SHUT SHUT Elisabeth")
-        #vector POG
+        # vector POG
         if "vector" in message.content.lower():
             await self.get_channel(self.channels["vc-text"]).send(file=discord.File("images/vector.jpg"))
         # emergency shutoff
         if message.content.startswith(">kill") and message.author.id == self.user_ids["grant"]:
             sys.exit()
         # play
-        if message.content.startswith(">play") and message.author.id == self.user_ids["grant"]:
+        if message.content.startswith(">play") and any(
+                [role.id == self.roles["mod"] or role.id == self.roles["hipster"] for role in message.author.roles]):
             channel = message.author.voice.channel
-            vcs = []
-            for c in self.channels.values():
-                if type(self.get_channel(c)) == discord.VoiceChannel:
-                    vcs.append(self.get_channel(c))
-            for channel in vcs:
-                if len(c.members) > 1:
-                    member = random.choice(channel.members)
-                    # print(channel.members)
-                    # print(member)
-                    # print(self.get_channel(731339163424784486))
-                    await member.move_to(self.get_channel(731339163424784486))
-                    source = FFmpegPCMAudio('images/scotland.mp3')
-                    voice = discord.utils.get(self.voice_clients, guild=message.guild)
-                    if voice and voice.is_connected():
-                        await voice.move_to(channel)
-                    else:
-                        voice = await self.get_channel(731339163424784486).connect()
-                    player = voice.play(source)
+            if channel != None:
+                member = random.choice(channel.members)
+                # print(channel.members)
+                # print(member)
+                # print(self.get_channel(731339163424784486))
+                await member.move_to(self.get_channel(731339163424784486))
+                source = FFmpegPCMAudio('images/scotland.mp3')
+                voice = discord.utils.get(self.voice_clients, guild=message.guild)
+                if voice and voice.is_connected():
+                    await voice.move_to(channel)
+                else:
+                    voice = await self.get_channel(731339163424784486).connect()
+                player = voice.play(source)
         # FAQ update
         save_html("current.html")
         if not filecmp.cmp("faq.html", "current.html"):
@@ -105,7 +104,6 @@ class Client(discord.Client):
             await self.get_channel(self.channels["faq-updates"]).send(
                 "https://www.wpi.edu/we-are-wpi/frequently-asked-questions")
             save_html("faq.html")
-
 
 
 client = Client()
