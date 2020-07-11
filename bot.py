@@ -34,6 +34,8 @@ def save_html(filename):
 class Client(discord.Client):
     def __init__(self):
         super().__init__()
+        self.voice = None
+        self.channel = None
         self.roles = {
             "mod": 699644834629288007,
             "hipster": 710844902585532416
@@ -81,6 +83,7 @@ class Client(discord.Client):
         if message.content.startswith(">kill") and message.author.id == self.user_ids["grant"]:
             sys.exit()
         # play
+
         if message.content.startswith(">play") and any(
                 [role.id == self.roles["mod"] or role.id == self.roles["hipster"] for role in message.author.roles]):
             channel = message.author.voice.channel
@@ -91,13 +94,17 @@ class Client(discord.Client):
                 # print(self.get_channel(731339163424784486))
 
                 source = FFmpegPCMAudio('images/scotland.mp3')
-                voice = discord.utils.get(self.voice_clients, guild=message.guild)
-                if voice and voice.is_connected():
+                self.voice = discord.utils.get(self.voice_clients, guild=message.guild)
+                if self.voice and self.voice.is_connected():
                     pass
                 else:
-                    voice = await self.get_channel(731339163424784486).connect()
-                    player = voice.play(source)
+                    self.voice = await self.get_channel(731339163424784486).connect()
+                    self.voice.play(source)
                     await member.move_to(self.get_channel(731339163424784486))
+        if self.voice is not None and self.voice.is_playing() and len(self.get_channel(731339163424784486).members) == 1:
+            self.get_channel(731339163424784486).disconnect()
+
+
         # FAQ update
         save_html("current.html")
         if not filecmp.cmp("faq.html", "current.html"):
