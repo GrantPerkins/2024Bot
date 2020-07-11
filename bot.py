@@ -81,7 +81,7 @@ class Client(discord.Client):
             channel = message.author.voice.channel
             if channel != None:
                 vc = await channel.connect()
-                source = FFmpegAudio('images/scotland.mp3')
+                source = FFmpegPCMAudio('images/scotland.mp3')
                 voice = discord.utils.get(self.voice_clients, guild=message.guild)
                 if voice and voice.is_connected():
                     await voice.move_to(channel)
