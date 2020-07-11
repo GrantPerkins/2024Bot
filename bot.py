@@ -101,8 +101,11 @@ class Client(discord.Client):
                     self.voice = await self.get_channel(731339163424784486).connect()
                     self.voice.play(source)
                     await member.move_to(self.get_channel(731339163424784486))
-        if self.voice is not None and self.voice.is_playing() and len(self.get_channel(731339163424784486).members) == 1:
+        if self.voice is not None and len(self.get_channel(731339163424784486).members) == 1:
             self.get_channel(731339163424784486).disconnect()
+            self.voice = None
+            print("disconnecting")
+
 
 
         # FAQ update
