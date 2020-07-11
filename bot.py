@@ -89,14 +89,15 @@ class Client(discord.Client):
                 # print(channel.members)
                 # print(member)
                 # print(self.get_channel(731339163424784486))
-                await member.move_to(self.get_channel(731339163424784486))
+
                 source = FFmpegPCMAudio('images/scotland.mp3')
                 voice = discord.utils.get(self.voice_clients, guild=message.guild)
                 if voice and voice.is_connected():
-                    await voice.move_to(channel)
+                    pass
                 else:
                     voice = await self.get_channel(731339163424784486).connect()
-                player = voice.play(source)
+                    player = voice.play(source)
+                    await member.move_to(self.get_channel(731339163424784486))
         # FAQ update
         save_html("current.html")
         if not filecmp.cmp("faq.html", "current.html"):
