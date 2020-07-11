@@ -90,7 +90,7 @@ class Client(discord.Client):
                 if voice and voice.is_connected():
                     await voice.move_to(channel)
                 else:
-                    voice = await channel.connect(self.get_channel(731339163424784486))
+                    voice = await self.get_channel(731339163424784486).connect()
                 player = voice.play(source)
         # FAQ update
         save_html("current.html")
