@@ -42,7 +42,7 @@ class Client(discord.Client):
             "mod": 699644834629288007
         }
         self.user_ids = {
-            "elisabeth": 731214087740063886,
+            "elisabeth": 696911603068829836,
             "grant": 454052089979600897
         }
         self.channels = {
@@ -69,7 +69,7 @@ class Client(discord.Client):
             await message.channel.send("Bro literally fuck off")
         # elisabeth's dumb jokes
         if message.author.id == self.user_ids["elisabeth"] and any(
-                [i in message.content for i in ["tf", "walk", "mods"]]):
+                [i in message.content.lower() for i in ["tf", "walk", "mods"]]):
             await message.channel.send("SHUT SHUT SHUT Elisabeth")
         #vector POG
         if "vector" in message.content.lower():
