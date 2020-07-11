@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
-from discord.voice_client import VoiceClient
+from discord import FFmpegAudio
 import asyncio
 import filecmp
 from time import time
@@ -68,7 +68,7 @@ class Client(discord.Client):
             await message.channel.send("Bro literally fuck off")
         # elisabeth's dumb jokes
         if message.author.id == self.user_ids["elisabeth"] and any(
-                [i in message.content for i in ["tf", "walk", "mods"]]):
+                [i in message.content for i in ["tf", "walk", "mods", "omg"]]):
             await message.channel.send("SHUT SHUT SHUT Elisabeth")
         #vector POG
         if "vector" in message.content.lower():
@@ -78,16 +78,16 @@ class Client(discord.Client):
             sys.exit()
         # play
         if message.content.startswith(">play") and message.author.id == self.user_ids["grant"]:
-            channel = message.author.voice.voice_channel
+            channel = message.author.voice.channel
             if channel != None:
                 vc = await channel.connect()
-                player = vc.create_ffmpeg_player('images/scotland.mp3', after=lambda: print('done'))
-                player.start()
-                while not player.is_done():
-                    await asyncio.sleep(1)
-                # disconnect after the player has finished
-                player.stop()
-                await vc.disconnect()
+                source = FFmpegAudio('images/scotland.mp3')
+                voice = discord.utils.get(self.voice_clients, guild=message.guild)
+                if voice and voice.is_connected():
+                    await voice.move_to(channel)
+                else:
+                    voice = await channel.connect()
+                player = voice.play(source)
         # FAQ update
         save_html("current.html")
         if not filecmp.cmp("faq.html", "current.html"):
