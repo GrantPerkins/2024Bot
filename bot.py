@@ -38,7 +38,8 @@ class Client(discord.Client):
         self.channel = None
         self.roles = {
             "mod": 699644834629288007,
-            "hipster": 710844902585532416
+            "hipster": 710844902585532416,
+            "bots": 699646033323622540
         }
         self.user_ids = {
             "elisabeth": 731214087740063886,
@@ -88,19 +89,20 @@ class Client(discord.Client):
                 [role.id == self.roles["mod"] or role.id == self.roles["hipster"] for role in message.author.roles]):
             channel = message.author.voice.channel
             if channel != None:
-                member = random.choice(channel.members)
-                # print(channel.members)
-                # print(member)
-                # print(self.get_channel(731339163424784486))
-
-                source = FFmpegPCMAudio('images/scotland.mp3')
-                self.voice = discord.utils.get(self.voice_clients, guild=message.guild)
-                if self.voice and self.voice.is_connected():
+                is_bot = lambda i: any([self.roles["bots"] == role.id for role in i.roles])
+                try:
+                    member = random.choice([i for i in channel.members if not is_bot(i)])
+                    source = FFmpegPCMAudio('images/scotland.mp3')
+                    self.voice = discord.utils.get(self.voice_clients, guild=message.guild)
+                    if self.voice and self.voice.is_connected():
+                        pass
+                    else:
+                        self.voice = await self.get_channel(731339163424784486).connect()
+                        self.voice.play(source)
+                        await member.move_to(self.get_channel(731339163424784486))
+                except:
                     pass
-                else:
-                    self.voice = await self.get_channel(731339163424784486).connect()
-                    self.voice.play(source)
-                    await member.move_to(self.get_channel(731339163424784486))
+
         if len(self.get_channel(731339163424784486).members) == 1:
             await self.voice.disconnect()
             self.voice = None
