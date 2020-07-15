@@ -42,7 +42,7 @@ class Client(discord.Client):
             "bots": 699646033323622540
         }
         self.user_ids = {
-            "elisabeth": 731214087740063886,
+            "elisabeth": 696911603068829836,
             "grant": 454052089979600897
         }
         self.channels = {
