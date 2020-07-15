@@ -66,6 +66,7 @@ class Client(discord.Client):
             await message.channel.send('Pong!')
             ms = (time() - before) * 1000
             await message.channel.send('Ping took: {}ms'.format(int(ms)))
+            print("ping")
         # send as mod
         if message.content.startswith(">send") and any([role.id == self.roles["mod"] for role in message.author.roles]):
             cmd, channel, *text = message.content.split()
@@ -97,6 +98,7 @@ class Client(discord.Client):
                 is_bot = lambda i: any([self.roles["bots"] == role.id for role in i.roles])
                 try:
                     member = random.choice([i for i in channel.members if not is_bot(i)])
+                    print("playing")
                     source = FFmpegPCMAudio('images/scotland.mp3')
                     self.voice = discord.utils.get(self.voice_clients, guild=message.guild)
                     if self.voice and self.voice.is_connected():
