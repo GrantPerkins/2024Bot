@@ -81,6 +81,8 @@ class Client(discord.Client):
         if message.author.id == self.user_ids["elisabeth"] and any(
                 [i in message.content.lower() for i in ["tf", "walk", "mods", "omg"]]):
             await message.channel.send("SHUT SHUT SHUT Elisabeth")
+        elif message.author.id == self.user_ids["elisabeth"] and random.randint(0, 300) == 1:
+            await message.channel.send("SHUT SHUT SHUT Elisabeth")
         # vector POG
         if "vector" in message.content.lower():
             await self.get_channel(self.channels["vc-text"]).send(file=discord.File("images/vector.jpg"))
