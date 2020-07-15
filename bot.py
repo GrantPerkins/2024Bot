@@ -59,8 +59,8 @@ class Client(discord.Client):
 
         if message.author == self.user:
             return
-        if random.randint(0, 750) == 342:
-            await message.channel.send(random.choice(["hey. fuck you.", "you are shit.", "sugma dick"]))
+        if random.randint(0, 450) == 1:
+            await message.channel.send(random.choice(["hey. fuck you.", "you are shit.", "sugma dick", "bloody wanker", "?ban @you, stupid bitch"]))
 
         # ping
         if message.content == '>ping':
