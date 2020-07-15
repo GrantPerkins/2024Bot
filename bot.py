@@ -79,7 +79,7 @@ class Client(discord.Client):
             await message.channel.send("Bro literally fuck off")
         # elisabeth's dumb jokes
         if message.author.id == self.user_ids["elisabeth"] and any(
-                [i in message.content for i in ["tf", "walk", "mods", "omg"]]):
+                [i.lower() in message.content for i in ["tf", "walk", "mods", "omg"]]):
             await message.channel.send("SHUT SHUT SHUT Elisabeth")
         # vector POG
         if "vector" in message.content.lower():
