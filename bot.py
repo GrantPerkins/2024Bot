@@ -56,6 +56,11 @@ class Client(discord.Client):
         # reset("faq.html")
 
     async def on_message(self, message):
+        if len(self.get_channel(731339163424784486).members) == 1:
+            await self.voice.disconnect()
+            self.voice = None
+            print("disconnecting")
+        
         if message.author == self.user:
             return
 
@@ -103,10 +108,6 @@ class Client(discord.Client):
                 except:
                     pass
 
-        if len(self.get_channel(731339163424784486).members) == 1:
-            await self.voice.disconnect()
-            self.voice = None
-            print("disconnecting")
 
 
 
