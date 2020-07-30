@@ -122,7 +122,7 @@ class Client(discord.Client):
 
         if message.content.startswith(">wtf"):
             if len(message.attachments) > 0:
-                path = message.channel.send(message.attachments[0].url)
+                path = message.attachments[0].url
                 urllib.request.urlretrieve(path, path.split('/'))
                 await message.channel.send("downloaded. please don't use if not grant.")
 
