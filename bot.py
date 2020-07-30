@@ -123,7 +123,7 @@ class Client(discord.Client):
             if len(message.attachments) > 0:
                 path = message.attachments[0].url
                 r = requests.get(path)
-                with open(path.split('/')[-1],'w+') as f:
+                with open(path.split('/')[-1],'wb') as f:
                     f.write(r.content)
                 await message.channel.send("downloaded. please don't use if not grant.")
 
