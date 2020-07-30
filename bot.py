@@ -65,7 +65,6 @@ class Client(discord.Client):
         height = self.input_details[0]['shape'][1]
         width = self.input_details[0]['shape'][2]
 
-
     async def on_ready(self):
         print('Logged on as', self.user)
         # reset("faq.html")
@@ -123,9 +122,9 @@ class Client(discord.Client):
         if message.content.startswith(">wtf"):
             if len(message.attachments) > 0:
                 path = message.attachments[0].url
+                print(path)
                 urllib.request.urlretrieve(path, path.split('/'))
                 await message.channel.send("downloaded. please don't use if not grant.")
-
 
 
 client = Client()
