@@ -24,6 +24,10 @@ with open("token.txt", 'r') as f:
 bot = commands.Bot(">")
 
 
+def load_labels(filename):
+  with open(filename, 'r') as f:
+    return [line.strip() for line in f.readlines()]
+
 def save_html(filename):
     response = urlopen(url)
     if response.getheader('Content-Type').split(";")[0] == 'text/html':
@@ -123,9 +127,36 @@ class Client(discord.Client):
             if len(message.attachments) > 0:
                 path = message.attachments[0].url
                 r = requests.get(path)
-                with open(path.split('/')[-1],'wb') as f:
+                name = path.split('/')[-1]
+                with open(name,'wb') as f:
                     f.write(r.content)
-                await message.channel.send("downloaded. please don't use if not grant.")
+                floating_model = self.input_details[0]['dtype'] == np.float32
+
+                # NxHxWxC, H:1, W:2
+                height = self.input_details[0]['shape'][1]
+                width = self.input_details[0]['shape'][2]
+                img = Image.open(name).resize((width, height))
+
+
+                # add N dim
+                input_data = np.expand_dims(img, axis=0)
+
+                if floating_model:
+                    input_data = (np.float32(input_data) - 127.5) / 127.5
+
+                self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
+                self.interpreter.invoke()
+
+                start_time = time.time()
+                self.interpreter.invoke()
+                stop_time = time.time()
+
+                output_data = self.interpreter.get_tensor(self.output_details[0]['index'])
+                results = np.squeeze(output_data)
+
+                top_k = results.argsort()[-5:][::-1]
+                labels = load_labels("labels_mobilenet_quant_v1_224.txt")
+                await message.channel.send("It's a {}.".format(labels[top_k[0]])+' time: {:.3f}ms'.format((stop_time - start_time) * 1000))
 
 
 client = Client()
