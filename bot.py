@@ -9,7 +9,9 @@ from urllib.request import urlopen
 import sys
 from faqparser import FAQParser
 import random
-import difflib
+import tflite_runtime.interpreter as tflite
+import numpy as np
+from PIL import Image
 
 url = 'https://www.wpi.edu/we-are-wpi/frequently-asked-questions'
 test_url = "https://www.wpi.edu/we-are-wpi"
@@ -52,6 +54,16 @@ class Client(discord.Client):
             "general": 699643028121452676,
             "vc-text": 706619592935735316
         }
+        self.interpreter = tflite.Interpreter("mobilenet_v1_1.0_224_quant.tflite")
+        self.interpreter.allocate_tensors()
+        self.input_details = self.interpreter.get_input_details()
+        self.output_details = self.interpreter.get_output_details()
+        floating_model = self.input_details[0]['dtype'] == np.float32
+
+        # NxHxWxC, H:1, W:2
+        height = self.input_details[0]['shape'][1]
+        width = self.input_details[0]['shape'][2]
+
 
     async def on_ready(self):
         print('Logged on as', self.user)
@@ -62,8 +74,8 @@ class Client(discord.Client):
         if message.author == self.user:
             return
         if random.randint(0, 450) == 1:
-            await message.channel.send(random.choice(["hey. fuck you.", "you are shit.", "sugma dick", "bloody wanker", "?ban @you, stupid bitch"]))
-
+            await message.channel.send(random.choice(
+                ["hey. fuck you.", "you are shit.", "sugma dick", "bloody wanker", "?ban @you, stupid bitch"]))
         # ping
         if message.content == '>ping':
             before = time()
@@ -79,15 +91,6 @@ class Client(discord.Client):
             await channel.send(text)
         if message.content.lower().startswith(">help"):
             await message.channel.send("Bro literally fuck off")
-        # elisabeth's dumb jokes
-        if message.author.id == self.user_ids["elisabeth"] and any(
-                [i in message.content.lower() for i in ["tf", "walk", "mods", "omg"]]):
-            await message.channel.send("SHUT SHUT SHUT Elisabeth")
-        elif message.author.id == self.user_ids["elisabeth"] and random.randint(0, 300) == 1:
-            await message.channel.send("SHUT SHUT SHUT Elisabeth")
-        # vector POG
-        if "vector" in message.content.lower():
-            await self.get_channel(self.channels["vc-text"]).send(file=discord.File("images/vector.jpg"))
         # emergency shutoff
         if message.content.startswith(">kill") and message.author.id == self.user_ids["grant"]:
             sys.exit()
@@ -116,25 +119,8 @@ class Client(discord.Client):
                 except:
                     pass
 
-
-
-
-        # FAQ update
-        save_html("current.html")
-        if not filecmp.cmp("faq.html", "current.html"):
-            faq = ""
-            with open("faq.html") as f:
-                faq = "\n".join(f.readlines())
-            current = ""
-            with open("current.html") as f:
-                current = "\n".join(f.readlines())
-
-            await self.get_channel(self.channels["faq-updates"]).send("WPI's FAQ changed. See:")
-            await self.get_channel(self.channels["faq-updates"]).send(
-                "https://www.wpi.edu/we-are-wpi/frequently-asked-questions")
-            for line in difflib.unified_diff("test", current, fromfile='OLD FAQ', tofile='NEW FAQ', lineterm='\n'):
-                await self.get_channel(self.channels["faq-updates"]).send(line)
-            save_html("faq.html")
+        if message.content.startswith(">wtf"):
+            await message.channel.send(message.content.attachments)
 
 
 client = Client()
