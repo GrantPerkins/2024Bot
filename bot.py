@@ -9,6 +9,7 @@ from urllib.request import urlopen
 import sys
 from faqparser import FAQParser
 import random
+import difflib
 
 url = 'https://www.wpi.edu/we-are-wpi/frequently-asked-questions'
 test_url = "https://www.wpi.edu/we-are-wpi"
@@ -29,6 +30,7 @@ def save_html(filename):
         parser.feed(html_string)
         with open(filename, "w+") as f:
             f.writelines(parser.data)
+        return parser.data
 
 
 class Client(discord.Client):
@@ -118,9 +120,18 @@ class Client(discord.Client):
         # FAQ update
         save_html("current.html")
         if not filecmp.cmp("faq.html", "current.html"):
+            faq = ""
+            with open("faq.html") as f:
+                faq = "\n".join(f.readlines())
+            current = ""
+            with open("current.html") as f:
+                current = "\n".join(f.readlines())
+
             await self.get_channel(self.channels["faq-updates"]).send("WPI's FAQ changed. See:")
             await self.get_channel(self.channels["faq-updates"]).send(
                 "https://www.wpi.edu/we-are-wpi/frequently-asked-questions")
+            for line in difflib.unified_diff(faq, current, fromfile='OLD FAQ', tofile='NEW FAQ', lineterm=''):
+                print(line)
             save_html("faq.html")
 
 
