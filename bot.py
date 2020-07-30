@@ -135,7 +135,12 @@ class Client(discord.Client):
                 # NxHxWxC, H:1, W:2
                 height = self.input_details[0]['shape'][1]
                 width = self.input_details[0]['shape'][2]
-                img = Image.open(name).resize((width, height))
+                img = Image.open(name)
+                if name.endswith("png"):
+                    img.save("test.jpg")
+                    img = Image.open("test.jpg")
+
+                img.resize((width, height))
 
 
                 # add N dim
