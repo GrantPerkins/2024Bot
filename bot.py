@@ -132,7 +132,7 @@ class Client(discord.Client):
             await self.get_channel(self.channels["faq-updates"]).send("WPI's FAQ changed. See:")
             await self.get_channel(self.channels["faq-updates"]).send(
                 "https://www.wpi.edu/we-are-wpi/frequently-asked-questions")
-            for line in difflib.unified_diff("test", current, fromfile='OLD FAQ', tofile='NEW FAQ', lineterm=''):
+            for line in difflib.unified_diff("test", current, fromfile='OLD FAQ', tofile='NEW FAQ', lineterm='\n'):
                 await self.get_channel(self.channels["faq-updates"]).send(line)
             save_html("faq.html")
 
