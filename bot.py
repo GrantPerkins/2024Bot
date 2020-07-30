@@ -12,7 +12,7 @@ import random
 import tflite_runtime.interpreter as tflite
 import numpy as np
 from PIL import Image
-import urllib.request
+import requests
 
 url = 'https://www.wpi.edu/we-are-wpi/frequently-asked-questions'
 test_url = "https://www.wpi.edu/we-are-wpi"
@@ -122,8 +122,9 @@ class Client(discord.Client):
         if message.content.startswith(">wtf"):
             if len(message.attachments) > 0:
                 path = message.attachments[0].url
-                print(path)
-                urllib.request.urlretrieve(path, path.split('/'))
+                r = requests.get(path)
+                with open(path.split('/')[-1],'w+') as f:
+                    f.write(r.content)
                 await message.channel.send("downloaded. please don't use if not grant.")
 
 
