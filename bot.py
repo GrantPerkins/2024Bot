@@ -147,9 +147,9 @@ class Client(discord.Client):
                 self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
                 self.interpreter.invoke()
 
-                start_time = time.time()
+                start_time = time()
                 self.interpreter.invoke()
-                stop_time = time.time()
+                stop_time = time()
 
                 output_data = self.interpreter.get_tensor(self.output_details[0]['index'])
                 results = np.squeeze(output_data)
