@@ -120,7 +120,7 @@ class Client(discord.Client):
                     pass
 
         if message.content.startswith(">wtf"):
-            await message.channel.send(message.content.attachments)
+            await message.channel.send(message.attachments)
 
 
 client = Client()
