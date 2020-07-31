@@ -137,6 +137,7 @@ class Client(discord.Client):
                 width = self.input_details[0]['shape'][2]
                 img = Image.open(name)
                 if name.endswith("png"):
+                    img = img.convert("RGB")
                     img.save("test.jpg")
                     img = Image.open("test.jpg")
 
