@@ -13,6 +13,7 @@ import tflite_runtime.interpreter as tflite
 import numpy as np
 from PIL import Image
 import requests
+import os
 
 url = 'https://www.wpi.edu/we-are-wpi/frequently-asked-questions'
 test_url = "https://www.wpi.edu/we-are-wpi"
@@ -140,6 +141,8 @@ class Client(discord.Client):
                     img = img.convert("RGB")
                     img.save("test.jpg")
                     img = Image.open("test.jpg")
+                    os.remove(name)
+                    name = "test.jpg"
 
                 img = img.resize((width, height))
 
@@ -167,6 +170,7 @@ class Client(discord.Client):
                 print(results)
                 await message.channel.send("It's a {}.".format(answer)+' time: {:.3f}ms, confidence of answer: {:08.6f}%'.format((stop_time - start_time) * 1000, confidence))
                 await message.channel.send(message.author.mention)
+                os.remove(name)
 
 
 client = Client()
