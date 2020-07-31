@@ -162,7 +162,9 @@ class Client(discord.Client):
 
                 top_k = results.argsort()[-5:][::-1]
                 labels = load_labels("labels_mobilenet_quant_v1_224.txt")
-                await message.channel.send("It's a {}.".format(labels[top_k[0]])+' time: {:.3f}ms, confidence of answer: {}%'.format((stop_time - start_time) * 1000), {results[0]*100})
+                answer = labels[top_k[0]]
+                confidence = results[0]*100
+                await message.channel.send("It's a {}.".format(answer)+' time: {:.3f}ms, confidence of answer: {}%'.format((stop_time - start_time) * 1000, confidence))
                 await message.channel.send(message.author.mention)
 
 
