@@ -140,7 +140,7 @@ class Client(discord.Client):
                     img.save("test.jpg")
                     img = Image.open("test.jpg")
 
-                img.resize((width, height))
+                img = img.resize((width, height))
 
 
                 # add N dim
