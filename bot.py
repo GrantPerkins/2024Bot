@@ -163,7 +163,7 @@ class Client(discord.Client):
                 top_k = results.argsort()[-5:][::-1]
                 labels = load_labels("labels_mobilenet_quant_v1_224.txt")
                 await message.channel.send("It's a {}.".format(labels[top_k[0]])+' time: {:.3f}ms'.format((stop_time - start_time) * 1000))
-                await message.channel.send(message.author)
+                await message.channel.send(message.author.mention)
 
 
 client = Client()
