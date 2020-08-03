@@ -81,6 +81,10 @@ class Client(discord.Client):
         if random.randint(0, 450) == 1:
             await message.channel.send(random.choice(
                 ["hey. fuck you.", "you are shit.", "sugma dick", "bloody wanker", "?ban @you, stupid bitch"]))
+        # anti counting
+        if message.author.id == self.user_ids["elisabeth"] and "counting" in message.content.lower():
+            await message.channel.send("No counting!")
+            await message.channel.send("@" + message.guild.members.get(self.user_ids["grant"]).displayName)
         # ping
         if message.content == '>ping':
             before = time()
