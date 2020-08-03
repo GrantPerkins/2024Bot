@@ -84,7 +84,7 @@ class Client(discord.Client):
         # anti counting
         if message.author.id == self.user_ids["elisabeth"] and "counting" in message.content.lower():
             await message.channel.send("No counting!")
-            await message.channel.send("@" + message.guild.members.get(self.user_ids["grant"]).displayName)
+            await message.channel.send(self.get_user(self.user_ids["grant"]).mention)
         # ping
         if message.content == '>ping':
             before = time()
