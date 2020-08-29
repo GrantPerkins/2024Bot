@@ -78,7 +78,8 @@ class Client(discord.Client):
 
         if message.author == self.user:
             return
-        if random.randint(0, 450) == 1:
+        if random.randint(0, 450) == 1 and any(
+                [role.id != self.roles["mod"] or role.id != self.roles["hipster"] for role in message.author.roles]):
             await message.channel.send(random.choice(
                 ["hey. fuck you.", "you are shit.", "sugma dick", "bloody wanker", "?ban @you, stupid bitch"]))
         # anti counting
