@@ -7,13 +7,14 @@ import filecmp
 from time import time
 from urllib.request import urlopen
 import sys
-from faqparser import FAQParser
 import random
 import tflite_runtime.interpreter as tflite
 import numpy as np
 from PIL import Image
 import requests
 import os
+
+from datetime import date
 
 url = 'https://www.wpi.edu/we-are-wpi/frequently-asked-questions'
 test_url = "https://www.wpi.edu/we-are-wpi"
@@ -26,8 +27,9 @@ bot = commands.Bot(">")
 
 
 def load_labels(filename):
-  with open(filename, 'r') as f:
-    return [line.strip() for line in f.readlines()]
+    with open(filename, 'r') as f:
+        return [line.strip() for line in f.readlines()]
+
 
 def save_html(filename):
     response = urlopen(url)
@@ -58,7 +60,8 @@ class Client(discord.Client):
         self.channels = {
             "faq-updates": 731273029602115694,
             "general": 699643028121452676,
-            "vc-text": 706619592935735316
+            "vc-text": 706619592935735316,
+            "hipster-text": 730191680082542732
         }
         self.interpreter = tflite.Interpreter("mobilenet_v1_1.0_224_quant.tflite")
         self.interpreter.allocate_tensors()
@@ -133,7 +136,7 @@ class Client(discord.Client):
                 path = message.attachments[0].url
                 r = requests.get(path)
                 name = path.split('/')[-1]
-                with open(name,'wb') as f:
+                with open(name, 'wb') as f:
                     f.write(r.content)
                 floating_model = self.input_details[0]['dtype'] == np.float32
 
@@ -149,7 +152,6 @@ class Client(discord.Client):
                     name = "test.jpg"
 
                 img = img.resize((width, height))
-
 
                 # add N dim
                 input_data = np.expand_dims(img, axis=0)
@@ -170,12 +172,28 @@ class Client(discord.Client):
                 top_k = results.argsort()[-5:][::-1]
                 labels = load_labels("labels_mobilenet_quant_v1_224.txt")
                 answer = labels[top_k[0]]
-                confidence = max(results)*100/255.0
+                confidence = max(results) * 100 / 255.0
                 print(results)
-                await message.channel.send("It's a {}.".format(answer)+' time: {:.3f}ms, confidence of answer: {:08.6f}%'.format((stop_time - start_time) * 1000, confidence))
+                await message.channel.send(
+                    "It's a {}.".format(answer) + ' time: {:.3f}ms, confidence of answer: {:08.6f}%'.format(
+                        (stop_time - start_time) * 1000, confidence))
                 await message.channel.send(message.author.mention)
                 os.remove(name)
-
+        if message.content.startswith(">book") and message.channel.id == self.channels["hipster-text"]:
+            try:
+                name, location, booking = message.content.split()[1:]
+                if location.lower().startswith("m"):
+                    location = "Morgan Dining Hall"
+                elif location.lower().startswith("c"):
+                    location = "Campus Center Food Court"
+                elif location.lower().startswith("g"):
+                    location = "Goat's Head Restaurant"
+                elif location.lower().startswith("f"):
+                    location = "Foisie Cafe"
+                day = date.today().strftime("%A %B %d, %Y")
+                await message.channel.send("{}\n{}\n{}\n{}".format(name, location, day, time))
+            except:
+                await message.channel.send("Something went wrong.")
 
 client = Client()
 client.run(TOKEN)
