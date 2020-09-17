@@ -236,8 +236,8 @@ This email is sent from an automated inbox and is not checked for replies.
                     server.sendmail(sent_from, to,
                                     self.email_text.format(to=email, hall=location, name=name, time=booking, date=day))
                 await message.channel.send("Check your email.")
-            except:
-                await message.channel.send("Something went wrong.")
+            except Exception as e:
+                await message.channel.send(e)
 
 
 client = Client()
