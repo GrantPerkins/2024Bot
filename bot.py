@@ -232,6 +232,7 @@ This email is sent from an automated inbox and is not checked for replies.
                 to = "gcperkins@wpi.edu"
 
                 with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+                    print(gmail_user, gmail_password)
                     server.login(gmail_user, gmail_password)
                     server.sendmail(sent_from, to,
                                     self.email_text.format(to=email, hall=location, name=name, time=booking, date=day))
