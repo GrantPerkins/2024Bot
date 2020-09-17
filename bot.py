@@ -208,37 +208,39 @@ This email is sent from an automated inbox and is not checked for replies.
                 await message.channel.send(message.author.mention)
                 os.remove(name)
         if message.content.startswith(">book") and message.channel.id == self.channels["hipster-text"]:
-            try:
-                name, location, booking, email = message.content.split()[1:]
-                if location.lower().startswith("m"):
-                    location = "Morgan Dining Hall"
-                elif location.lower().startswith("c"):
-                    location = "Campus Center Food Court"
-                elif location.lower().startswith("g"):
-                    location = "Goat's Head Restaurant"
-                elif location.lower().startswith("f"):
-                    location = "Foisie Cafe"
-                day = date.today().strftime("%A %B %d, %Y")
-                await message.channel.send("{}\n{}\n{}\n{}".format(name, location, day, booking))
-                port = 465  # For SSL
+            if message.content.split()[1] == "how":
+                message.channel.send(">book {your name} {where ya wanna eat (m, cc, gh, foisie, or smthn else)} {time} {your email}")
+            else:
+                try:
+                    name, location, booking, email = message.content.split()[1:]
+                    if location.lower().startswith("m"):
+                        location = "Morgan Dining Hall"
+                    elif location.lower().startswith("c"):
+                        location = "Campus Center Food Court"
+                    elif location.lower().startswith("g"):
+                        location = "Goat's Head Restaurant"
+                    elif location.lower().startswith("f"):
+                        location = "Foisie Cafe"
+                    day = date.today().strftime("%A %B %d, %Y")
+                    await message.channel.send("{}\n{}\n{}\n{}".format(name, location, day, booking))
+                    port = 465  # For SSL
 
-                # Create a secure SSL context
-                context = ssl.create_default_context()
-                gmail_user = "gcperk20@gmail.com"
-                gmail_password = None
-                with open("pass.txt", 'r') as f:
-                    gmail_password = f.readline().rstrip('\n')
-                sent_from = gmail_user
-                to = "gcperkins@wpi.edu"
+                    # Create a secure SSL context
+                    context = ssl.create_default_context()
+                    gmail_user = "gcperk20@gmail.com"
+                    gmail_password = None
+                    with open("pass.txt", 'r') as f:
+                        gmail_password = f.readline().rstrip('\n')
+                    sent_from = gmail_user
 
-                with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-                    print(gmail_user, gmail_password)
-                    server.login(gmail_user, gmail_password)
-                    server.sendmail(sent_from, to,
-                                    self.email_text.format(to=email, hall=location, name=name, time=booking, date=day))
-                await message.channel.send("Check your email.")
-            except Exception as e:
-                await message.channel.send(e)
+                    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+                        print(gmail_user, gmail_password)
+                        server.login(gmail_user, gmail_password)
+                        server.sendmail(sent_from, email,
+                                        self.email_text.format(to=email, hall=location, name=name, time=booking, date=day))
+                    await message.channel.send("Check your email.")
+                except Exception as e:
+                    await message.channel.send(e)
 
 
 client = Client()
