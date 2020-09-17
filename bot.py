@@ -13,6 +13,8 @@ import numpy as np
 from PIL import Image
 import requests
 import os
+import smtplib
+import ssl
 
 from datetime import date
 
@@ -72,6 +74,32 @@ class Client(discord.Client):
         # NxHxWxC, H:1, W:2
         height = self.input_details[0]['shape'][1]
         width = self.input_details[0]['shape'][2]
+        self.email_text = """\
+From: gcperk20@gmail.com
+To: {to}
+Subject: [Dine On Campus] Reservation Confirmation
+
+Dear {name},
+
+Thank you for making a reservation through Dine On Campus. 
+
+You are confirmed at:
+
+Location: {hall}
+Date: {date}
+Time: {time}
+
+You can cancel your reservation any time by logging into your account using the Dine On Campus mobile app or website. 
+
+You can login at https://dineoncampus.com/wpi/login
+
+Thank you!
+
+------------------------------------ 
+
+This email is sent from an automated inbox and is not checked for replies.
+
+"""
 
     async def on_ready(self):
         print('Logged on as', self.user)
@@ -181,7 +209,7 @@ class Client(discord.Client):
                 os.remove(name)
         if message.content.startswith(">book") and message.channel.id == self.channels["hipster-text"]:
             try:
-                name, location, booking = message.content.split()[1:]
+                name, location, booking, email = message.content.split()[1:]
                 if location.lower().startswith("m"):
                     location = "Morgan Dining Hall"
                 elif location.lower().startswith("c"):
@@ -191,9 +219,26 @@ class Client(discord.Client):
                 elif location.lower().startswith("f"):
                     location = "Foisie Cafe"
                 day = date.today().strftime("%A %B %d, %Y")
-                await message.channel.send("{}\n{}\n{}\n{}".format(name, location, day, time))
+                await message.channel.send("{}\n{}\n{}\n{}".format(name, location, day, booking))
+                port = 465  # For SSL
+
+                # Create a secure SSL context
+                context = ssl.create_default_context()
+                gmail_user = "gcperk20@gmail.com"
+                gmail_password = None
+                with open("pass.txt", 'r') as f:
+                    gmail_password = f.readline().rstrip('\n')
+                sent_from = gmail_user
+                to = "gcperkins@wpi.edu"
+
+                with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+                    server.login(gmail_user, gmail_password)
+                    server.sendmail(sent_from, to,
+                                    self.email_text.format(to=email, hall=location, name=name, time=booking, date=day))
+                await message.channel.send("Check your email.")
             except:
                 await message.channel.send("Something went wrong.")
+
 
 client = Client()
 client.run(TOKEN)
