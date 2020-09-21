@@ -227,7 +227,7 @@ This email is sent from an automated inbox and is not checked for replies.
                                 name = d[message.author.id][0]
                                 booking = d[message.author.id][1]
                         except:
-                            message.channel.send("issue with config. try re-running >config {name} {email}.")
+                            await message.channel.send("issue with config. try re-running >config {name} {email}.")
                     if location.lower().startswith("m"):
                         location = "Morgan Dining Hall"
                     elif location.lower().startswith("c"):
