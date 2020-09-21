@@ -223,9 +223,10 @@ This email is sent from an automated inbox and is not checked for replies.
                             with open("config.json", 'r') as f:
                                 d = json.load(f)
                                 location, booking = text
-                                print(d, d[message.author.id])
-                                name = d[message.author.id][0]
-                                booking = d[message.author.id][1]
+                                id = int(message.author.id)
+                                print(d, d[id])
+                                name = d[id][0]
+                                booking = d[id][1]
                         except Exception as e:
                             await message.channel.send("issue with config. try re-running >config {name} {email}. "+str(e))
                     if location.lower().startswith("m"):
