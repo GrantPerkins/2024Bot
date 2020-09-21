@@ -239,7 +239,7 @@ This email is sent from an automated inbox and is not checked for replies.
                     elif location.lower().startswith("f"):
                         location = "Foisie Cafe"
                     day = date.today().strftime("%A %B %d, %Y")
-                    await message.channel.send("{}\n{}\n{}\n{}".format(name, location, day, booking))
+                    await message.channel.send("{}\n{}\n{}\n{}\n{}".format(email, location, name, booking, day))
                     port = 465  # For SSL
 
                     # Create a secure SSL context
