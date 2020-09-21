@@ -261,7 +261,7 @@ This email is sent from an automated inbox and is not checked for replies.
                 name = text[0]
                 email = text[1]
                 d = json.load(f)
-                d.update({int(id): [name, email]})
+                d[id] = [name, email]
                 json.dump(d, f)
 
 
