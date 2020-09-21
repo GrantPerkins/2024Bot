@@ -255,13 +255,15 @@ This email is sent from an automated inbox and is not checked for replies.
                 except Exception as e:
                     await message.channel.send("ERROR "+str(e))
         if message.content.startswith(">config") and message.channel.id == self.channels["bookings"]:
-            with open("config.json", 'w+') as f:
+            d= {}
+            with open("config.json", 'r') as f:
                 id = message.author.id
                 text = message.content.split()[1:]
                 name = text[0]
                 email = text[1]
                 d = json.load(f)
                 d[id] = [name, email]
+            with open("config.json", 'w+') as f:
                 json.dump(d, f)
 
 
