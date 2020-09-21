@@ -223,11 +223,11 @@ This email is sent from an automated inbox and is not checked for replies.
                             with open("config.json", 'r') as f:
                                 d = json.load(f)
                                 location, booking = text
-                                print(d,d[message.author.id])
+                                print(d, d[message.author.id])
                                 name = d[message.author.id][0]
                                 booking = d[message.author.id][1]
-                        except:
-                            await message.channel.send("issue with config. try re-running >config {name} {email}.")
+                        except Exception as e:
+                            await message.channel.send("issue with config. try re-running >config {name} {email}. "+str(e))
                     if location.lower().startswith("m"):
                         location = "Morgan Dining Hall"
                     elif location.lower().startswith("c"):
@@ -252,8 +252,7 @@ This email is sent from an automated inbox and is not checked for replies.
                         print(gmail_user, gmail_password)
                         server.login(gmail_user, gmail_password)
                         server.sendmail(sent_from, email,
-                                        self.email_text.format(to=email, hall=location, name=name, time=booking,
-                                                               date=day))
+                                        self.email_text.format(to=email, hall=location, name=name, time=booking, date=day))
                     await message.channel.send("Check your email.")
                 except Exception as e:
                     await message.channel.send("ERROR "+e)
