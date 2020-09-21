@@ -211,7 +211,7 @@ This email is sent from an automated inbox and is not checked for replies.
         if message.content.startswith(">book") and message.channel.id == self.channels["hipster-text"]:
             if message.content.split()[1] == "how":
                 await message.channel.send(
-                    ">book {your name} {where ya wanna eat (m, cc, gh, foisie, or smthn else)} {time} {your email}")
+                    "First, config future bookings. Run `>config {your name} {your email}.\n Then, book for today. Run `>book {where ya wanna eat (m, cc, gh, foisie, or smthn else)} {time}")
             else:
                 try:
                     text = message.content.split()[1:]
