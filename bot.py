@@ -15,6 +15,7 @@ import requests
 import os
 import smtplib
 import ssl
+import json
 
 from datetime import date
 
@@ -209,10 +210,20 @@ This email is sent from an automated inbox and is not checked for replies.
                 os.remove(name)
         if message.content.startswith(">book") and message.channel.id == self.channels["hipster-text"]:
             if message.content.split()[1] == "how":
-                message.channel.send(">book {your name} {where ya wanna eat (m, cc, gh, foisie, or smthn else)} {time} {your email}")
+                await message.channel.send(
+                    ">book {your name} {where ya wanna eat (m, cc, gh, foisie, or smthn else)} {time} {your email}")
             else:
                 try:
-                    name, location, booking, email = message.content.split()[1:]
+                    text = message.content.split()[1:]
+                    name, location, booking, email = None, None, None, None
+                    if len(text) == 4:
+                        name, location, booking, email = message.content.split()[1:]
+                    else:
+                        with open("config.json", 'r') as f:
+                            d = json.load(f)
+                            location, booking = text
+                            name = d[message.author.id][0]
+                            booking = d[message.author.id][1]
                     if location.lower().startswith("m"):
                         location = "Morgan Dining Hall"
                     elif location.lower().startswith("c"):
@@ -237,11 +248,20 @@ This email is sent from an automated inbox and is not checked for replies.
                         print(gmail_user, gmail_password)
                         server.login(gmail_user, gmail_password)
                         server.sendmail(sent_from, email,
-                                        self.email_text.format(to=email, hall=location, name=name, time=booking, date=day))
+                                        self.email_text.format(to=email, hall=location, name=name, time=booking,
+                                                               date=day))
                     await message.channel.send("Check your email.")
                 except Exception as e:
                     await message.channel.send(e)
-
+        if message.content.startswith(">config") and message.channel.id == self.channels["hipster-text"]:
+            with open("config.json",'w+') as f:
+                id = message.author.id
+                text = message.content.split()[1:]
+                name = text[0]
+                email = text[1]
+                d = json.load(f)
+                d.update({id: [name, email]})
+                json.dump(d, f)
 
 client = Client()
 client.run(TOKEN)
