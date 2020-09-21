@@ -256,7 +256,7 @@ This email is sent from an automated inbox and is not checked for replies.
                                         self.email_text.format(to=email, hall=location, name=name, time=booking, date=day))
                     await message.channel.send("Check your email.")
                 except Exception as e:
-                    await message.channel.send("ERROR "+e)
+                    await message.channel.send("ERROR "+str(e))
         if message.content.startswith(">config") and message.channel.id == self.channels["hipster-text"]:
             with open("config.json", 'w+') as f:
                 id = message.author.id
@@ -268,7 +268,7 @@ This email is sent from an automated inbox and is not checked for replies.
                     d = json.load(f)
                 except:
                     pass
-                d.update({id: [name, email]})
+                d.update({int(id): [name, email]})
                 json.dump(d, f)
 
 
