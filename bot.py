@@ -261,7 +261,9 @@ This email is sent from an automated inbox and is not checked for replies.
                 text = message.content.split()[1:]
                 name = text[0]
                 email = text[1]
-                d = json.load(f)
+                try:
+                    d = json.load(f)
+                except: pass
                 d[id] = [name, email]
             with open("config.json", 'w+') as f:
                 json.dump(d, f)
