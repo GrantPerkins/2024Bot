@@ -64,7 +64,8 @@ class Client(discord.Client):
             "faq-updates": 731273029602115694,
             "general": 699643028121452676,
             "vc-text": 706619592935735316,
-            "hipster-text": 730191680082542732
+            "hipster-text": 730191680082542732,
+            "bookings": 757732209594597477
         }
         self.interpreter = tflite.Interpreter("mobilenet_v1_1.0_224_quant.tflite")
         self.interpreter.allocate_tensors()
@@ -208,7 +209,7 @@ This email is sent from an automated inbox and is not checked for replies.
                         (stop_time - start_time) * 1000, confidence))
                 await message.channel.send(message.author.mention)
                 os.remove(name)
-        if message.content.startswith(">book") and message.channel.id == self.channels["hipster-text"]:
+        if message.content.startswith(">book") and message.channel.id == self.channels["bookings"]:
             if message.content.split()[1] == "how":
                 await message.channel.send(
                     "First, config future bookings. Run `>config {your name} {your email}`.\n Then, book for today. Run `>book {where ya wanna eat (m, cc, gh, foisie, or smthn else)} {time}`")
@@ -256,7 +257,7 @@ This email is sent from an automated inbox and is not checked for replies.
                     await message.channel.send("Check your email.")
                 except Exception as e:
                     await message.channel.send("ERROR "+str(e))
-        if message.content.startswith(">config") and message.channel.id == self.channels["hipster-text"]:
+        if message.content.startswith(">config") and message.channel.id == self.channels["bookings"]:
             with open("config.json", 'w+') as f:
                 id = message.author.id
                 text = message.content.split()[1:]
