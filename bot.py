@@ -254,14 +254,19 @@ This email is sent from an automated inbox and is not checked for replies.
                 except Exception as e:
                     await message.channel.send(e)
         if message.content.startswith(">config") and message.channel.id == self.channels["hipster-text"]:
-            with open("config.json",'w+') as f:
+            with open("config.json", 'w+') as f:
                 id = message.author.id
                 text = message.content.split()[1:]
                 name = text[0]
                 email = text[1]
-                d = json.load(f)
+                d = {}
+                try:
+                    d = json.load(f)
+                except:
+                    pass
                 d.update({id: [name, email]})
                 json.dump(d, f)
+
 
 client = Client()
 client.run(TOKEN)
