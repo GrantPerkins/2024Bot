@@ -219,11 +219,14 @@ This email is sent from an automated inbox and is not checked for replies.
                     if len(text) == 4:
                         name, location, booking, email = message.content.split()[1:]
                     else:
-                        with open("config.json", 'r') as f:
-                            d = json.load(f)
-                            location, booking = text
-                            name = d[message.author.id][0]
-                            booking = d[message.author.id][1]
+                        try:
+                            with open("config.json", 'r') as f:
+                                d = json.load(f)
+                                location, booking = text
+                                name = d[message.author.id][0]
+                                booking = d[message.author.id][1]
+                        except:
+                            message.channel.send("issue with config. try re-running >config {name} {email}.")
                     if location.lower().startswith("m"):
                         location = "Morgan Dining Hall"
                     elif location.lower().startswith("c"):
@@ -252,7 +255,7 @@ This email is sent from an automated inbox and is not checked for replies.
                                                                date=day))
                     await message.channel.send("Check your email.")
                 except Exception as e:
-                    await message.channel.send(e)
+                    await message.channel.send("ERROR "+e)
         if message.content.startswith(">config") and message.channel.id == self.channels["hipster-text"]:
             with open("config.json", 'w+') as f:
                 id = message.author.id
