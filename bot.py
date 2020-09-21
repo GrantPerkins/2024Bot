@@ -222,13 +222,14 @@ This email is sent from an automated inbox and is not checked for replies.
                         try:
                             with open("config.json", 'r') as f:
                                 d = json.load(f)
+                                print(d)
                                 location, booking = text
                                 id = int(message.author.id)
                                 print(d, d[id])
                                 name = d[id][0]
                                 booking = d[id][1]
                         except Exception as e:
-                            await message.channel.send("issue with config. try re-running >config {name} {email}. "+str(e))
+                            await message.channel.send("issue with config. try re-running >config {name} {email}. "+str(e.))
                     if location.lower().startswith("m"):
                         location = "Morgan Dining Hall"
                     elif location.lower().startswith("c"):
