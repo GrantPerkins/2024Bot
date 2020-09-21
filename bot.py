@@ -217,18 +217,15 @@ This email is sent from an automated inbox and is not checked for replies.
                 try:
                     text = message.content.split()[1:]
                     name, location, booking, email = None, None, None, None
-                    if len(text) == 4:
-                        name, location, booking, email = message.content.split()[1:]
-                    else:
-                        try:
-                            with open("config.json", 'r') as f:
-                                d = json.load(f)
-                                location, booking = text
-                                id = str(message.author.id)
-                                name = d[id][0]
-                                email = d[id][1]
-                        except Exception as e:
-                            await message.channel.send("issue with config. try re-running >config {name} {email}. "+str(e))
+                    try:
+                        with open("config.json", 'r') as f:
+                            d = json.load(f)
+                            location, booking = text
+                            id = str(message.author.id)
+                            name = d[id][0]
+                            email = d[id][1]
+                    except Exception as e:
+                        await message.channel.send("issue with config. try re-running >config {name} {email}. "+str(e))
                     if location.lower().startswith("m"):
                         location = "Morgan Dining Hall"
                     elif location.lower().startswith("c"):
@@ -238,7 +235,7 @@ This email is sent from an automated inbox and is not checked for replies.
                     elif location.lower().startswith("f"):
                         location = "Foisie Cafe"
                     day = date.today().strftime("%A %B %d, %Y")
-                    await message.channel.send("{}\n{}\n{}\n{}\n{}".format(email, location, name, booking, day))
+                    await message.channel.send("Email:{}\nLocation:{}\nName:{}\nTime:{}\nDay:{}".format(email, location, name, booking, day))
                     port = 465  # For SSL
 
                     # Create a secure SSL context
@@ -263,11 +260,7 @@ This email is sent from an automated inbox and is not checked for replies.
                 text = message.content.split()[1:]
                 name = text[0]
                 email = text[1]
-                d = {}
-                try:
-                    d = json.load(f)
-                except:
-                    pass
+                d = json.load(f)
                 d.update({int(id): [name, email]})
                 json.dump(d, f)
 
