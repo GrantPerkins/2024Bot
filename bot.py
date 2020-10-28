@@ -1,9 +1,6 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands import Bot
 from discord import FFmpegPCMAudio
-import asyncio
-import filecmp
 from time import time
 from urllib.request import urlopen
 import sys
@@ -34,18 +31,6 @@ def load_labels(filename):
         return [line.strip() for line in f.readlines()]
 
 
-def save_html(filename):
-    response = urlopen(url)
-    if response.getheader('Content-Type').split(";")[0] == 'text/html':
-        html_bytes = response.read()
-        html_string = html_bytes.decode("utf-8")
-        parser = FAQParser()
-        parser.feed(html_string)
-        with open(filename, "w+") as f:
-            f.writelines(parser.data)
-        return parser.data
-
-
 class Client(discord.Client):
     def __init__(self):
         super().__init__()
@@ -65,7 +50,7 @@ class Client(discord.Client):
             "general": 699643028121452676,
             "vc-text": 706619592935735316,
             "hipster-text": 730191680082542732,
-            "bookings": 757732209594597477
+            "bookings": [757732209594597477, 771056191542919188]
         }
         self.interpreter = tflite.Interpreter("mobilenet_v1_1.0_224_quant.tflite")
         self.interpreter.allocate_tensors()
@@ -225,7 +210,8 @@ This email is sent from an automated inbox and is not checked for replies.
                             name = d[id][0]
                             email = d[id][1]
                     except Exception as e:
-                        await message.channel.send("issue with config. try re-running >config {name} {email}. "+str(e))
+                        await message.channel.send(
+                            "issue with config. try re-running >config {name} {email}. " + str(e))
                     if location.lower().startswith("m"):
                         location = "Morgan Dining Hall"
                     elif location.lower().startswith("c"):
@@ -235,7 +221,8 @@ This email is sent from an automated inbox and is not checked for replies.
                     elif location.lower().startswith("f"):
                         location = "Foisie Cafe"
                     day = date.today().strftime("%A %B %d, %Y")
-                    await message.channel.send("Email:{}\nLocation:{}\nName:{}\nTime:{}\nDay:{}".format(email, location, name, booking, day))
+                    await message.channel.send(
+                        "Email:{}\nLocation:{}\nName:{}\nTime:{}\nDay:{}".format(email, location, name, booking, day))
                     port = 465  # For SSL
 
                     # Create a secure SSL context
@@ -250,12 +237,13 @@ This email is sent from an automated inbox and is not checked for replies.
                         print(gmail_user, gmail_password)
                         server.login(gmail_user, gmail_password)
                         server.sendmail(sent_from, email,
-                                        self.email_text.format(to=email, hall=location, name=name, time=booking, date=day))
+                                        self.email_text.format(to=email, hall=location, name=name, time=booking,
+                                                               date=day))
                     await message.channel.send("Check your email.")
                 except Exception as e:
-                    await message.channel.send("ERROR "+str(e))
-        if message.content.startswith(">config") and message.channel.id == self.channels["bookings"]:
-            d= {}
+                    await message.channel.send("ERROR " + str(e))
+        if message.content.startswith(">config") and message.channel.id in self.channels["bookings"]:
+            d = {}
             with open("config.json", 'r') as f:
                 id = message.author.id
                 text = message.content.split()[1:]
@@ -263,7 +251,8 @@ This email is sent from an automated inbox and is not checked for replies.
                 email = text[1]
                 try:
                     d = json.load(f)
-                except: pass
+                except:
+                    pass
                 d[id] = [name, email]
             with open("config.json", 'w+') as f:
                 json.dump(d, f)
