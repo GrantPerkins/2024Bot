@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands import Bot
 from discord import FFmpegPCMAudio
+import asyncio
+import filecmp
 from time import time
 from urllib.request import urlopen
 import sys
@@ -50,7 +53,8 @@ class Client(discord.Client):
             "general": 699643028121452676,
             "vc-text": 706619592935735316,
             "hipster-text": 730191680082542732,
-            "bookings": [757732209594597477, 771056191542919188]
+            "bookings": 757732209594597477,
+            "bookings2": 771056191542919188
         }
         self.interpreter = tflite.Interpreter("mobilenet_v1_1.0_224_quant.tflite")
         self.interpreter.allocate_tensors()
@@ -242,7 +246,8 @@ This email is sent from an automated inbox and is not checked for replies.
                     await message.channel.send("Check your email.")
                 except Exception as e:
                     await message.channel.send("ERROR " + str(e))
-        if message.content.startswith(">config") and message.channel.id in self.channels["bookings"]:
+        if message.content.startswith(">config") and message.channel.id == self.channels[
+            "bookings"] or message.channel.id == self.channels["bookings2"]:
             d = {}
             with open("config.json", 'r') as f:
                 id = message.author.id
