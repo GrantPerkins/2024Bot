@@ -198,7 +198,8 @@ This email is sent from an automated inbox and is not checked for replies.
                         (stop_time - start_time) * 1000, confidence))
                 await message.channel.send(message.author.mention)
                 os.remove(name)
-        if message.content.startswith(">book") and message.channel.id == self.channels["bookings"]:
+
+        if message.content.startswith(">book") and message.channel.id == self.channels["bookings"] or message.channel.id == self.channels["bookings2"]:
             if message.content.split()[1] == "how":
                 await message.channel.send(
                     "First, config future bookings. Run `>config {your name} {your email}`.\n Then, book for today. Run `>book {where ya wanna eat (m, cc, gh, foisie, or smthn else)} {time}`")
