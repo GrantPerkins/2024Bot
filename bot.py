@@ -52,8 +52,7 @@ class Client(discord.Client):
             "general": 699643028121452676,
             "vc-text": 706619592935735316,
             "hipster-text": 730191680082542732,
-            "bookings": 757732209594597477,
-            "bookings2": 771056191542919188
+            "bookings": 771056191542919188
         }
         self.interpreter = tflite.Interpreter("mobilenet_v1_1.0_224_quant.tflite")
         self.interpreter.allocate_tensors()
@@ -93,7 +92,6 @@ This email is sent from an automated inbox and is not checked for replies.
 
     async def on_ready(self):
         print('Logged on as', self.user)
-        # reset("faq.html")
 
     async def on_message(self, message):
 
@@ -110,7 +108,7 @@ This email is sent from an automated inbox and is not checked for replies.
             await message.channel.send('Ping took: {}ms'.format(int(ms)))
             print("ping")
         # send as mod
-        if message.content.startswith(">send") and any([role.id == self.roles["mod"] for role in message.author.roles]):
+        if message.content.startswith(">send") and message.author.id == self.user_ids["grant"]:
             cmd, channel, *text = message.content.split()
             text = " ".join(text)
             channel = self.get_channel(int(channel[2:-1]))
@@ -120,7 +118,6 @@ This email is sent from an automated inbox and is not checked for replies.
         # emergency shutoff
         if message.content.startswith(">kill") and message.author.id == self.user_ids["grant"]:
             sys.exit()
-
         if message.content.startswith(">wtf"):
             if len(message.attachments) > 0:
                 path = message.attachments[0].url
@@ -170,7 +167,7 @@ This email is sent from an automated inbox and is not checked for replies.
                 await message.channel.send(message.author.mention)
                 os.remove(name)
 
-        if message.content.startswith(">book") and (message.channel.id == self.channels["bookings"] or message.channel.id == self.channels["bookings2"]):
+        if message.content.startswith(">book") and message.channel.id == self.channels["bookings"]:
             if message.content.split()[1] == "how":
                 await message.channel.send(
                     "First, config future bookings. Run `>config {your name} {your email}`.\n Then, book for today. Run `>book {where ya wanna eat (m, cc, gh, foisie, or smthn else)} {time}`")
@@ -218,8 +215,7 @@ This email is sent from an automated inbox and is not checked for replies.
                     await message.channel.send("Check your email.")
                 except Exception as e:
                     await message.channel.send("ERROR " + str(e))
-        if message.content.startswith(">config") and (message.channel.id == self.channels[
-            "bookings"] or message.channel.id == self.channels["bookings2"]):
+        if message.content.startswith(">config") and message.channel.id == self.channels["bookings"]:
             d = {}
             with open("config.json", 'r') as f:
                 id = message.author.id
@@ -233,6 +229,7 @@ This email is sent from an automated inbox and is not checked for replies.
                 d[id] = [name, email]
             with open("config.json", 'w+') as f:
                 json.dump(d, f)
+            await message.channel.send("Successful config.", name, email)
 
 
 client = Client()
