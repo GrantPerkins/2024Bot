@@ -45,7 +45,6 @@ class Client(discord.Client):
             "bots": 699646033323622540
         }
         self.user_ids = {
-            "elisabeth": 696911603068829836,
             "grant": 454052089979600897
         }
         self.channels = {
@@ -125,30 +124,6 @@ This email is sent from an automated inbox and is not checked for replies.
         # emergency shutoff
         if message.content.startswith(">kill") and message.author.id == self.user_ids["grant"]:
             sys.exit()
-        # play
-        if len(self.get_channel(731339163424784486).members) == 1:
-            await self.voice.disconnect()
-            self.voice = None
-            print("disconnecting")
-
-        if message.content.startswith(">play") and any(
-                [role.id == self.roles["mod"] or role.id == self.roles["hipster"] for role in message.author.roles]):
-            channel = message.author.voice.channel
-            if channel != None:
-                is_bot = lambda i: any([self.roles["bots"] == role.id for role in i.roles])
-                try:
-                    member = random.choice([i for i in channel.members if not is_bot(i)])
-                    print("playing")
-                    source = FFmpegPCMAudio('images/scotland.mp3')
-                    self.voice = discord.utils.get(self.voice_clients, guild=message.guild)
-                    if self.voice and self.voice.is_connected():
-                        pass
-                    else:
-                        self.voice = await self.get_channel(731339163424784486).connect()
-                        self.voice.play(source)
-                        await member.move_to(self.get_channel(731339163424784486))
-                except:
-                    pass
 
         if message.content.startswith(">wtf"):
             if len(message.attachments) > 0:
@@ -232,7 +207,7 @@ This email is sent from an automated inbox and is not checked for replies.
 
                     # Create a secure SSL context
                     context = ssl.create_default_context()
-                    gmail_user = "gcperk20@gmail.com"
+                    gmail_user = "dineoncampu@gmail.com"
                     gmail_password = None
                     with open("pass.txt", 'r') as f:
                         gmail_password = f.readline().rstrip('\n')
